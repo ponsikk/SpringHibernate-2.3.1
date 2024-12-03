@@ -1,33 +1,40 @@
 package org.example.controller;
 
 import org.example.dao.UserDao;
-import org.example.users.User;
+import org.example.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
 
+import org.example.model.User;
+import org.example.service.UserService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserDao userDao;
+    private final UserService userService;
+
+    // Внедрение UserService через конструктор
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public String listUsers(Model model) {
-        model.addAttribute("users", userDao.findAll());
+        model.addAttribute("users", userService.getAllUsers());
         return "user-list";
     }
-
 
     @PostMapping("/add")
     public String addUser(@RequestParam("name") String name,
                           @RequestParam("lastName") String lastName,
                           @RequestParam("email") String email) {
-        userDao.save(new User(name, lastName, email));
+        userService.createUser(new User(name, lastName, email));
         return "redirect:/users";
     }
 
@@ -36,19 +43,19 @@ public class UserController {
                              @RequestParam("name") String name,
                              @RequestParam("lastName") String lastName,
                              @RequestParam("email") String email) {
-        User user = userDao.findById(id);
+        User user = userService.getUserById(id);
         if (user != null) {
             user.setFirstName(name);
             user.setLastName(lastName);
             user.setEmail(email);
-            userDao.update(user);
+            userService.updateUser(user);
         }
         return "redirect:/users";
     }
 
     @PostMapping("/delete")
     public String deleteUser(@RequestParam("id") Long id) {
-        userDao.delete(id);
+        userService.deleteUser(id);
         return "redirect:/users";
     }
 }
