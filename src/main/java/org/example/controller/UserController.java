@@ -1,17 +1,12 @@
 package org.example.controller;
 
-import org.example.dao.UserDao;
-import org.example.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
 import org.example.model.User;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import org.example.service.UserServiceImp;
 
 @Controller
 @RequestMapping("/users")
@@ -19,13 +14,13 @@ public class UserController {
 
     private final UserService userService;
 
-    // Внедрение UserService через конструктор
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public String listUsers(Model model) {
+    public String getUserList(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "user-list";
     }
