@@ -32,6 +32,18 @@ public class UserServiceImp implements UserService {
         userDao.updateUser(user);
     }
 
+    public void updateUserDetails(Long id, String name, String lastName, String email) {
+        User user = userDao.findUserById(id);
+        if (user != null) {
+            user.setFirstName(name);
+            user.setLastName(lastName);
+            user.setEmail(email);
+            userDao.updateUser(user);
+        } else {
+            throw new IllegalArgumentException("User not found with ID: " + id);
+        }
+    }
+
     public void deleteUser(Long id) {
         userDao.deleteUserById(id);
     }
