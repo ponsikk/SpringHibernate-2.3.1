@@ -29,20 +29,23 @@ public class UserServiceImp implements UserService {
     }
 
     public void updateUser(User user) {
-        userDao.updateUser(user);
+        User existingUser = userDao.findUserById(user.getId());
+        if (existingUser == null) {
+            throw new IllegalArgumentException("User not found with ID: " + user.getId());
+        }
+
+        if (user.getFirstName() != null) {
+            existingUser.setFirstName(user.getFirstName());
+        }
+        if (user.getLastName() != null) {
+            existingUser.setLastName(user.getLastName());
+        }
+        if (user.getEmail() != null) {
+            existingUser.setEmail(user.getEmail());
+        }
+        userDao.updateUser(existingUser);
     }
 
-    public void updateUserDetails(Long id, String name, String lastName, String email) {
-        User user = userDao.findUserById(id);
-        if (user != null) {
-            user.setFirstName(name);
-            user.setLastName(lastName);
-            user.setEmail(email);
-            userDao.updateUser(user);
-        } else {
-            throw new IllegalArgumentException("User not found with ID: " + id);
-        }
-    }
 
     public void deleteUser(Long id) {
         userDao.deleteUserById(id);
